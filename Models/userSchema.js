@@ -4,22 +4,21 @@ const validator = require('validator')
 const userSchama = new mongoose.Schema({
     firm:{
         type:String,
-        required:true,
+        required:true
     },
     email:{
         type:String,
         require:true,
         unique:true,
-        validator(value){
-            if(!validator.isEmail(value)){
-                throw new Error("Invalid Email")
-            }
+        validate: {
+            validator: value => validator.isEmail(value),
+            message: 'Invalid Email/Password'
         }
     },
     password:{
         type:String,
         require:true,
-        min: 6  
+        minlength: 6  
     }
 })
 
