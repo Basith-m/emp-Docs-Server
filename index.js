@@ -10,6 +10,7 @@ const empDoxServer = express()
 empDoxServer.use(cors())
 empDoxServer.use(express.json())
 empDoxServer.use(router)
+empDoxServer.use('/uploads',express.static('./uploads'))
 const PORT = 4000 || process.env.PORT
 
 empDoxServer.listen(PORT,()=>{
