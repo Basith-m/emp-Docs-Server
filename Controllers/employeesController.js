@@ -7,8 +7,8 @@ exports.addEmployee = async (req, res) => {
     const employeeImage = req.file.filename
     // console.log(employeeImage);
     // console.log(`${userId}`);
-    const { name, empID, position, DOB, gender, address, joinDate, salary } = req.body
-    // console.log(`${name},${empID},${position},${DOB},${gender},${address},${joinDate},${salary},${employeeImage}`);
+    const { name, employeeID, position, DOB, gender, address, joinDate, salary } = req.body
+    // console.log(`${name},${employeeID},${position},${DOB},${gender},${address},${joinDate},${salary},${employeeImage}`);
     try {
         // check the employee already exist
         const existingEmployee = await employees.findOne({ userId })
@@ -17,7 +17,7 @@ exports.addEmployee = async (req, res) => {
         } else {
             // add/insert employee
             const newEmployee = new employees({
-                name, employeeID: empID, position, DOB, gender, address, joinDate, salary, empImage: employeeImage
+                name, employeeID: employeeID, position, DOB, gender, address, joinDate, salary, empImage: employeeImage
             })
             // store in mongoDB collection
             await newEmployee.save()
@@ -48,14 +48,43 @@ exports.getAllEmployee = async (req, res) => {
 
 // get a employee
 exports.getAEmployee = async (req, res) => {
-    const {id} = req.params
+    const { id } = req.params
     try {
-        const employee = await employees.findOne({ employeeID:id })
+        const employee = await employees.findOne({ employeeID: id })
         if (!employee) {
             return res.status(404).json({ message: "Employee not found" });
         }
         res.status(200).json(employee)
     } catch (err) {
+        res.status(401).json(err)
+    }
+}
+
+// edit emplpoyee
+exports.editEmployee = async (req, res) => {
+    const { id } = req.params
+    const userId = req.payload
+    const { name, employeeID, position, DOB, gender, address, joinDate, salary,empImage } = req.body
+    const employeeImage = req.file?req.file.filename:empImage
+    try{
+        const employee = await employees.findByIdAndUpdate({_id:id},{
+            name,employeeID,position,DOB,gender,address,joinDate,salary,"empImage":employeeImage,userId
+        },{new:true})
+        await employee.save()
+        res.status(200).json(employee)
+    }catch(err){
+        res.status(401).json(err)
+    }
+}
+
+// delete employee
+exports.deleteEmployee = async (req,res)=>{
+    // get employee
+    const {id} = req.params
+    try{
+        const removeEmployee = await employees.findByIdAndDelete({_id:id})
+        res.status(200).json(removeEmployee)
+    }catch(err){
         res.status(401).json(err)
     }
 }

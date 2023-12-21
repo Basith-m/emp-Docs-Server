@@ -16,5 +16,8 @@ router.post('/employee/add',jwtMiddleware,multerConfig.single('empImage'),employ
 router.get('/employees/all',jwtMiddleware,employeeController.getAllEmployee)
 // get a single employee
 router.get('/employees/:id',jwtMiddleware,employeeController.getAEmployee)
-
+// edit employee
+router.put('/employees/edit/:id',jwtMiddleware,multerConfig.single('empImage'),employeeController.editEmployee)
+// delete employee
+router.delete('/employees/remove/:id',jwtMiddleware,employeeController.deleteEmployee)
 module.exports = router
