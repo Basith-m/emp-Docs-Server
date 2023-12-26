@@ -7,8 +7,8 @@ exports.addEmployee = async (req, res) => {
     const employeeImage = req.file.filename
     // console.log(employeeImage);
     // console.log(`${userId}`);
-    const { name, employeeID, position, DOB, gender, address, joinDate, salary } = req.body
-    // console.log(`${name},${employeeID},${position},${DOB},${gender},${address},${joinDate},${salary},${employeeImage}`);
+    const { name, employeeID,firm, position, DOB, gender, address, joinDate, salary } = req.body
+    // console.log(`${name},${employeeID},${firm},${position},${DOB},${gender},${address},${joinDate},${salary},${employeeImage}`);
     try {
         // check the employee already exist
         const existingEmployee = await employees.findOne({ userId })
@@ -17,7 +17,7 @@ exports.addEmployee = async (req, res) => {
         } else {
             // add/insert employee
             const newEmployee = new employees({
-                name, employeeID: employeeID, position, DOB, gender, address, joinDate, salary, empImage: employeeImage
+                name, employeeID: employeeID, firm, position, DOB, gender, address, joinDate, salary, empImage: employeeImage
             })
             // store in mongoDB collection
             await newEmployee.save()
@@ -31,12 +31,17 @@ exports.addEmployee = async (req, res) => {
 // get all employee
 exports.getAllEmployee = async (req, res) => {
     const searchkey = req.query.search
+    const firm = req.query.firm
     const query = {
-        $or: [
-            { name: { $regex: searchkey, $options: 'i' } },
-            { employeeID: { $regex: searchkey, $options: 'i' } },
-            // Add other fields you want to search here
-        ],
+        $and: [
+            {
+                $or: [
+                    { name: { $regex: searchkey, $options: 'i' } },
+                    { employeeID: { $regex: searchkey, $options: 'i' } }
+                ],
+            },
+            { firm: { $regex: firm, $options: 'i' } }
+        ]
     };
     try {
         const allEmployee = await employees.find(query)

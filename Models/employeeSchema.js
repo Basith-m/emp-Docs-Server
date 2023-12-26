@@ -10,6 +10,10 @@ const employeeSchema = new mongoose.Schema({
         required:true,
         unique:true
     },
+    firm:{
+        type:String,
+        required:true
+    },
     position:{
         type:String,
         required:true

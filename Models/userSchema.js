@@ -4,7 +4,8 @@ const validator = require('validator')
 const userSchama = new mongoose.Schema({
     firm:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     email:{
         type:String,
